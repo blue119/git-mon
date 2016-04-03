@@ -23,12 +23,12 @@ do
     echo "NOW_TS=${NOW_TS}"
     echo "LAST_TS=${LAST_TS}"
     if [ ! ${NOW_TS} = ${LAST_TS} ]; then
-        for c in `git log --no-merges --before="${NOW_TS}" --after="${LAST_TS}" --pretty="%H" -- ${INTERESTED_FILE[@]}
+        for c in `git log --no-merges --before="${NOW_TS}" --after="${LAST_TS}" --pretty="%H" -- ${INTERESTED_FILE[@]}`
         do
             git log -n 1 -p $c > ${TMP_DIR}/$c.patch
             pygmentize -f html -O noclasses -l diff -o ${TMP_DIR}/$c.html ${TMP_DIR}/$c.patch
             SUBJECT=`git log -n 1 --pretty=format:'%an - %s (%cI)' --abbrev-commit $c`
-            echo "${TMP_DIR}/$c.html"
+            echo "diff file: ${TMP_DIR}/$c.html"
             python ${MY_DIR}/send_mail.py "[git-mon] $SUBJECT" ${TMP_DIR}/$c.html
         done
     fi
